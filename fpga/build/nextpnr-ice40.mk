@@ -17,18 +17,20 @@ PROJECT_PCF_SRCS := $(filter %.pcf,$(PROJECT_SRCS))
 $(PROJECT_YS): _OPTS := $(PROJECT_YOSYS_OPTS)
 $(PROJECT_YS): _SRCS := $(PROJECT_VLG_SRCS)
 $(PROJECT_YS): _JSON := $(PROJECT_JSON)
+$(PROJECT_YS): _TOP := $(PROJECT_TOP)
 $(PROJECT_YS): $(PROJECT_SRCS) $(PROJECT_DEF) build/nextpnr-ice40.mk
 	@mkdir -p $(dir $@)
 	@echo GENERATING: $@
 	@echo verilog_defines -DHEX_PATHS -DYOSYS > $@
 	@for src in $(_SRCS); do echo read_verilog -sv $$src; done >> $@
-	@echo synth_ice40 $(_OPTS) -top top -json $(_JSON) >> $@
+	@echo synth_ice40 $(_OPTS) -top $(_TOP) -json $(_JSON) >> $@
 
 $(PROJECT_LINT): _SRCS := $(PROJECT_VLG_SRCS)
+$(PROJECT_LINT): _TOP := $(PROJECT_TOP)
 $(PROJECT_LINT): $(PROJECT_SRCS)
 	@mkdir -p $(dir $@)
 	@echo LINTING: $@
-	@$(VERILATOR) --top-module top --lint-only $(_SRCS)
+	@$(VERILATOR) --top-module $(_TOP) --lint-only $(_SRCS)
 	@touch $@
 
 $(PROJECT_JSON): _LOG := $(PROJECT_OBJDIR)/$(PROJECT_NAME).yosys.log
