@@ -26,6 +26,7 @@ $(eval PROJECT_DEF := $1)\
 $(eval PROJECT_TYPE :=)\
 $(eval PROJECT_PART :=)\
 $(eval PROJECT_SRCS :=)\
+$(eval PROJECT_DEFINES :=)\
 $(eval PROJECT_TOP := top)\
 $(eval PROJECT_VOPTS :=)\
 $(eval PROJECT_VERILOG_DEFS :=)\
