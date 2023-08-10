@@ -1,0 +1,52 @@
+
+set_io clk12 35
+
+set_frequency clk12 12.0
+set_frequency clk25 25.0
+
+# User LEDs
+set_io led_red 11
+set_io led_grn 37
+
+# FTDI 
+set_io uart_rx 6
+set_io uart_tx 9
+
+# PMOD2
+set_io hdmi_clk 25
+set_io hdmi_hsync 21
+set_io hdmi_vsync 18
+set_io hdmi_de 20
+set_io hdmi_red 26
+set_io hdmi_grn 27
+set_io hdmi_blu 23
+
+# PMOD1A
+set_io extbus_d[0] 4
+set_io extbus_d[1] 3
+set_io extbus_d[2] 2
+set_io extbus_d[3] 48
+set_io extbus_d[4] 47
+set_io extbus_d[5] 46
+set_io extbus_d[6] 45
+set_io extbus_d[7] 44
+
+# PMOD1B
+set_io extbus_a[0] 43
+set_io extbus_a[1] 42
+set_io extbus_a[2] 38
+set_io extbus_a[3] 36
+set_io extbus_a[4] 34
+set_io extbus_rd_n 32
+set_io extbus_wr_n 31
+set_io extbus_irq_n 28
+
+#set_io spi_sck 15
+#set_io spi_mosi 14
+#set_io spi_miso 17
+#set_io spi_ssel_n_sd 16
+
+# RGB LED header
+set_io audio_lrck 39
+set_io audio_bck 40 
+set_io audio_data 41 
