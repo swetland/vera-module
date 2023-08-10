@@ -14,6 +14,7 @@ PROJECT_YS := $(PROJECT_OBJDIR)/$(PROJECT_NAME).ys
 PROJECT_VLG_SRCS := $(filter %.v %.sv,$(PROJECT_SRCS)) 
 PROJECT_PCF_SRCS := $(filter %.pcf,$(PROJECT_SRCS))
 
+$(PROJECT_YS): _OPTS := $(PROJECT_YOSYS_OPTS)
 $(PROJECT_YS): _SRCS := $(PROJECT_VLG_SRCS)
 $(PROJECT_YS): _JSON := $(PROJECT_JSON)
 $(PROJECT_YS): $(PROJECT_SRCS) $(PROJECT_DEF) build/nextpnr-ice40.mk
@@ -21,7 +22,7 @@ $(PROJECT_YS): $(PROJECT_SRCS) $(PROJECT_DEF) build/nextpnr-ice40.mk
 	@echo GENERATING: $@
 	@echo verilog_defines -DHEX_PATHS -DYOSYS > $@
 	@for src in $(_SRCS); do echo read_verilog -sv $$src; done >> $@
-	@echo synth_ice40 -top top -json $(_JSON) >> $@
+	@echo synth_ice40 $(_OPTS) -top top -json $(_JSON) >> $@
 
 $(PROJECT_LINT): _SRCS := $(PROJECT_VLG_SRCS)
 $(PROJECT_LINT): $(PROJECT_SRCS)

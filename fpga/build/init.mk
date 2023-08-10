@@ -29,6 +29,7 @@ $(eval PROJECT_SRCS :=)\
 $(eval PROJECT_VOPTS :=)\
 $(eval PROJECT_VERILOG_DEFS :=)\
 $(eval PROJECT_NEXTPNR_OPTS :=)\
+$(eval PROJECT_YOSYS_OPTS :=)\
 $(eval include $(PROJECT_DEF))\
 $(eval PROJECT_NAME := $(patsubst project/%.def,%,$(PROJECT_DEF)))\
 $(eval pr-inc := $(wildcard $(patsubst %,build/%.mk,$(PROJECT_TYPE))))\
