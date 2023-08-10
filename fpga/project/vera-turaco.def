@@ -1,0 +1,16 @@
+
+PROJECT_TYPE := nextpnr-ice40
+
+PROJECT_DEFINES := WITH_VGA_ACTIVE
+
+PROJECT_NEXTPNR_OPTS := --package sg48 --up5k
+PROJECT_YOSYS_OPTS := -abc9 -dsp
+
+PROJECT_TOP := turaco_top
+
+PROJECT_SRCS := \
+	project/vera-turaco.pcf \
+	source/compat/turaco_top.v \
+	source/compat/pll_50_25.v
+
+include project/vera-common.inc

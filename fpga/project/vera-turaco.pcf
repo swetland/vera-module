@@ -1,0 +1,51 @@
+
+set_io clk50 35
+
+set_frequency clk50 50.0
+set_frequency clk25 25.0
+
+set_io clk25_out 28
+
+set_io extbus_rd_n 36
+set_io extbus_wr_n 31
+set_io extbus_a[0] 40
+set_io extbus_a[1] 39
+set_io extbus_a[2] 37
+set_io extbus_a[3] 41
+set_io extbus_a[4] 34
+set_io extbus_d[0] 27
+set_io extbus_d[1] 26
+set_io extbus_d[2] 25
+set_io extbus_d[3] 23
+set_io extbus_d[4] 21
+set_io extbus_d[5] 20
+set_io extbus_d[6] 19
+set_io extbus_d[7] 18
+
+# SPI_MOSI
+set_io extbus_irq_n 14
+
+set_io vga_r[0] 10
+set_io vga_r[1] 11
+set_io vga_r[2] 12
+set_io vga_r[3] 13
+set_io vga_g[0] 3
+set_io vga_g[1] 4
+set_io vga_g[2] 6
+set_io vga_g[3] 9
+set_io vga_b[0] 46
+set_io vga_b[1] 47
+set_io vga_b[2] 48
+set_io vga_b[3] 2
+set_io vga_hsync 44
+set_io vga_vsync 45
+set_io vga_active 32
+
+set_io audio_lrck 43
+set_io audio_bck 38
+set_io audio_data 42
+
+#set_io spi_sck 15
+#set_io spi_mosi 14
+#set_io spi_miso 17
+#set_io spi_ssel_n_sd 16
