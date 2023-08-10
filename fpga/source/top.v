@@ -12,6 +12,9 @@ module top(
     output reg  [3:0] vga_b       /* synthesis syn_useioff = 1 */,
     output reg        vga_hsync   /* synthesis syn_useioff = 1 */,
     output reg        vga_vsync   /* synthesis syn_useioff = 1 */,
+`ifdef WITH_VGA_ACTIVE
+    output reg        vga_active  /* synthesis syn_useioff = 1 */,
+`endif
 
 `ifdef WITH_SPI
     // SPI interface
@@ -1113,6 +1116,7 @@ module top(
 
     wire [3:0] video_vga_r, video_vga_g, video_vga_b;
     wire       video_vga_hsync, video_vga_vsync;
+    wire       video_vga_active;
 
     video_vga video_vga(
         .rst(reset),
@@ -1131,7 +1135,8 @@ module top(
         .vga_g(video_vga_g),
         .vga_b(video_vga_b),
         .vga_hsync(video_vga_hsync),
-        .vga_vsync(video_vga_vsync));
+        .vga_vsync(video_vga_vsync),
+        .vga_active(video_vga_active));
 
 `ifdef WITH_VIDEO_OUTPUT_SELECT
     //////////////////////////////////////////////////////////////////////////
@@ -1187,6 +1192,9 @@ module top(
         vga_b     <= video_vga_b;
         vga_hsync <= video_vga_hsync;
         vga_vsync <= video_vga_vsync;
+`ifdef WITH_VGA_ACTIVE
+        vga_active <= video_vga_active;
+`endif
     end
 `endif
 
