@@ -243,6 +243,7 @@ module layer_renderer(
         end else begin
             render_start <= 0;
 
+/* verilator lint_off CASEINCOMPLETE */
             case (state_r)
                 WAIT_START: begin
                 end
@@ -315,6 +316,7 @@ module layer_renderer(
                     end
                 end
             endcase
+/* verilator lint_on CASEINCOMPLETE */
 
             if (line_render_start) begin
                 state_r         <= bitmap_mode ? FETCH_TILE : FETCH_MAP;
@@ -429,16 +431,16 @@ module layer_renderer(
     reg [7:0] cur_pixel_data_8bpp;
     always @* case (hflipped_xcnt[1:0])
         // Byte 0
-        3'd0: cur_pixel_data_8bpp = render_data_r[7:0];
+        2'd0: cur_pixel_data_8bpp = render_data_r[7:0];
 
         // Byte 1
-        3'd1: cur_pixel_data_8bpp = render_data_r[15:8];
+        2'd1: cur_pixel_data_8bpp = render_data_r[15:8];
 
         // Byte 2
-        3'd2: cur_pixel_data_8bpp = render_data_r[23:16];
+        2'd2: cur_pixel_data_8bpp = render_data_r[23:16];
 
         // Byte 3
-        3'd3: cur_pixel_data_8bpp = render_data_r[31:24];
+        2'd3: cur_pixel_data_8bpp = render_data_r[31:24];
     endcase
 
     // Select current pixel based on current color depth
@@ -493,9 +495,9 @@ module layer_renderer(
     // -----------------------------------------------------------------------
     // The start position of the rendering in the line buffer depends on the
     // horizontal scroll position and the selected horizontal pixel scaling.
-    wire [3:0] subtile_hscroll = tile_width ? hscroll[3:0] : hscroll[2:0];
+    wire [3:0] subtile_hscroll = tile_width ? hscroll[3:0] : { 1'b0, hscroll[2:0] };
 
-    wire [9:0] lb_wridx_start = 10'd0 - subtile_hscroll;
+    wire [9:0] lb_wridx_start = 10'd0 - { 6'b0, subtile_hscroll };
     // -----------------------------------------------------------------------
 
 
