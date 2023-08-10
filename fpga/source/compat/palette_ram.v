@@ -14,6 +14,26 @@ module palette_ram(
     input  wire  [7:0] rd_addr_i,
     output reg  [15:0] rd_data_o);
 
+`ifndef verilator
+
+SB_RAM40_4K #(
+    .READ_MODE(0),
+    .WRITE_MODE(0)
+    ) bram0 (
+    .WADDR(wr_addr_i),
+    .RADDR(rd_addr_i),
+    .MASK({ {8{ben_i[1]}}, {8{ben_i[0]}} }),
+    .WDATA(wr_data_i[15:0]),
+    .RDATA(rd_data_o[15:0]),
+    .WE(wr_en_i),
+    .WCLKE(wr_clk_en_i),
+    .WCLK(wr_clk_i),
+    .RE(rd_en_i),
+    .RCLKE(rd_clk_en_i),
+    .RCLK(rd_clk_i)
+    );
+
+`else
     reg [15:0] mem[0:255];
 
     always @(posedge wr_clk_i) begin
@@ -26,6 +46,7 @@ module palette_ram(
     always @(posedge rd_clk_i) begin
         rd_data_o <= mem[rd_addr_i];
     end
+`endif
 
 `ifdef TODO
     initial begin: INIT
