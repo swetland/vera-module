@@ -1,15 +1,10 @@
 //`default_nettype none
 
+`define WITH_AUDIO
+`define WITH_SPI
+
 module top(
     input  wire       clk25,
-
-    // External bus interface
-    input  wire       extbus_cs_n,   /* Chip select */
-    input  wire       extbus_rd_n,   /* Read strobe */
-    input  wire       extbus_wr_n,   /* Write strobe */
-    input  wire [4:0] extbus_a,      /* Address */
-    inout  wire [7:0] extbus_d,      /* Data (bi-directional) */
-    output wire       extbus_irq_n,  /* IRQ */
 
     // VGA interface
     output reg  [3:0] vga_r       /* synthesis syn_useioff = 1 */,
@@ -18,16 +13,29 @@ module top(
     output reg        vga_hsync   /* synthesis syn_useioff = 1 */,
     output reg        vga_vsync   /* synthesis syn_useioff = 1 */,
 
+`ifdef WITH_SPI
     // SPI interface
     output wire       spi_sck,
     output wire       spi_mosi,
     input  wire       spi_miso,
     output wire       spi_ssel_n_sd,
+`endif
 
+`ifdef WITH_AUDIO
     // Audio output
     output wire       audio_lrck,
     output wire       audio_bck,
-    output wire       audio_data);
+    output wire       audio_data,
+`endif
+
+    // External bus interface
+    input  wire       extbus_cs_n,   /* Chip select */
+    input  wire       extbus_rd_n,   /* Read strobe */
+    input  wire       extbus_wr_n,   /* Write strobe */
+    input  wire [4:0] extbus_a,      /* Address */
+    inout  wire [7:0] extbus_d,      /* Data (bi-directional) */
+    output wire       extbus_irq_n   /* IRQ */
+);
 
     //////////////////////////////////////////////////////////////////////////
     // Synchronize external asynchronous reset signal to clk25 domain
@@ -270,8 +278,8 @@ module top(
 
     wire [16:0] vram_addr             = (access_addr == 5'h03) ? vram_addr_0_r : vram_addr_1_r;
     wire        vram_addr_decr        = (access_addr == 5'h03) ? vram_addr_decr_0_r : vram_addr_decr_1_r;
-    wire [16:0] vram_addr_incremented = vram_addr + increment;
-    wire [16:0] vram_addr_decremented = vram_addr - increment;
+    wire [16:0] vram_addr_incremented = vram_addr + { 7'b0, increment };
+    wire [16:0] vram_addr_decremented = vram_addr - { 7'b0, increment };
     wire [16:0] vram_addr_new         = vram_addr_decr ? vram_addr_decremented : vram_addr_incremented;
 
     always @* begin
@@ -965,10 +973,10 @@ module top(
 
     reg [3:0] sprite_attr_bytesel;
     always @* case (ib_addr_r[1:0])
-        3'd0: sprite_attr_bytesel = 4'b0001;
-        3'd1: sprite_attr_bytesel = 4'b0010;
-        3'd2: sprite_attr_bytesel = 4'b0100;
-        3'd3: sprite_attr_bytesel = 4'b1000;
+        2'd0: sprite_attr_bytesel = 4'b0001;
+        2'd1: sprite_attr_bytesel = 4'b0010;
+        2'd2: sprite_attr_bytesel = 4'b0100;
+        2'd3: sprite_attr_bytesel = 4'b1000;
     endcase
 
     sprite_ram sprite_attr_ram(
@@ -1057,6 +1065,7 @@ module top(
         .rd_addr_i(composer_display_data),
         .rd_data_o(palette_rgb_data));
 
+`ifdef WITH_COMPOSITE_VIDEO
     //////////////////////////////////////////////////////////////////////////
     // Composite video
     //////////////////////////////////////////////////////////////////////////
@@ -1092,6 +1101,7 @@ module top(
         .rgb_g(video_rgb_g),
         .rgb_b(video_rgb_b),
         .rgb_sync_n(video_rgb_sync_n));
+`endif
 
     //////////////////////////////////////////////////////////////////////////
     // VGA video
@@ -1123,6 +1133,7 @@ module top(
         .vga_hsync(video_vga_hsync),
         .vga_vsync(video_vga_vsync));
 
+`ifdef WITH_VIDEO_OUTPUT_SELECT
     //////////////////////////////////////////////////////////////////////////
     // Video output selection
     //////////////////////////////////////////////////////////////////////////
@@ -1164,6 +1175,20 @@ module top(
             vga_vsync <= 0;
         end
     endcase
+`else
+    assign next_frame   = video_vga_next_frame;
+    assign next_line    = video_vga_next_line;
+    assign next_pixel   = video_vga_display_next_pixel;
+    assign vblank_pulse = video_vga_vblank_pulse;
+
+    always @(posedge clk) begin
+        vga_r     <= video_vga_r;
+        vga_g     <= video_vga_g;
+        vga_b     <= video_vga_b;
+        vga_hsync <= video_vga_hsync;
+        vga_vsync <= video_vga_vsync;
+    end
+`endif
 
     //////////////////////////////////////////////////////////////////////////
     // FPGA reconfiguration
@@ -1175,6 +1200,7 @@ module top(
         .BOOT(fpga_reconfigure_r));
 `endif
 
+`ifdef WITH_SPI
     //////////////////////////////////////////////////////////////////////////
     // SPI interface
     //////////////////////////////////////////////////////////////////////////
@@ -1196,7 +1222,9 @@ module top(
         .spi_sck(spi_sck),
         .spi_mosi(spi_mosi),
         .spi_miso(spi_miso));
+`endif
 
+`ifdef WITH_AUDIO
     //////////////////////////////////////////////////////////////////////////
     // Audio
     //////////////////////////////////////////////////////////////////////////
@@ -1229,5 +1257,6 @@ module top(
         .i2s_lrck(audio_lrck),
         .i2s_bck(audio_bck),
         .i2s_data(audio_data));
+`endif
 
 endmodule
