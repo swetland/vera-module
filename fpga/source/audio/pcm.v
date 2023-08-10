@@ -99,6 +99,7 @@ module pcm(
         right_output_next = right_output_r;
         fifo_read         = 0;
 
+/* verilator lint_off CASEINCOMPLETE */
         case (state_r)
             IDLE: begin
                 if (fifo_empty) begin
@@ -160,6 +161,7 @@ module pcm(
                 state_next        = IDLE;
             end
         endcase
+/* verilator lint_on CASEINCOMPLETE */
 
         if (state_r != DONE && fifo_empty) begin
             fifo_read  = 0;
