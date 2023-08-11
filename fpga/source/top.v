@@ -31,6 +31,12 @@ module top(
     output wire       audio_data,
 `endif
 
+`ifdef WITH_SPI_DEBUG
+    input  wire       debug_wr,
+    input  wire [4:0] debug_addr,
+    input  wire [7:0] debug_wdata,
+`endif
+
     // External bus interface
     input  wire       extbus_cs_n,   /* Chip select */
     input  wire       extbus_rd_n,   /* Read strobe */
@@ -218,6 +224,12 @@ module top(
 
     assign extbus_irq_n = (irq_status & irq_enable) == 0;
 
+`ifdef WITH_SPI_DEBUG
+    wire do_read  = 1'b0;
+    wire do_write = debug_wr;
+    wire [4:0] access_addr = debug_addr;
+    wire [7:0] write_data  = debug_wdata;
+`else
     // Capture address / write-data at end of write cycle
     reg [4:0] rdaddr_r;
     reg [4:0] wraddr_r;
@@ -245,6 +257,7 @@ module top(
     wire do_write = bus_write_r[2:1] == 2'b10;
     wire [4:0] access_addr = do_write ? wraddr_r : rdaddr_r;
     wire [7:0] write_data  = wrdata_r;
+`endif
 
     // Decode increment value
     wire [3:0] incr_regval = (access_addr == 5'h03) ? vram_addr_incr_0_r : vram_addr_incr_1_r;
