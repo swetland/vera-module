@@ -16,6 +16,13 @@ module icebreaker_top(
     output wire       audio_bck,
     output wire       audio_data,
 
+`ifdef WITH_SPI_DEBUG
+    input wire        spi_clk,
+    input wire        spi_cs,
+    input wire        spi_si,
+    output wire       spi_so,
+`endif
+
     // External bus interface
     input  wire       extbus_rd_n,   /* Read strobe */
     input  wire       extbus_wr_n,   /* Write strobe */
@@ -40,6 +47,23 @@ pll_12_25 pll(
     .locked()
     );
 
+`ifdef WITH_SPI_DEBUG
+wire [7:0] sys_waddr;
+wire [7:0] sys_wdata;
+wire sys_wr;
+
+spi_debug_ifc debug(
+    .spi_clk(spi_clk),
+    .spi_cs_i(spi_cs),
+    .spi_data_i(spi_si),
+    .spi_data_o(spi_so),
+    .sys_clk(clk25),
+    .sys_wr_o(sys_wr),
+    .sys_waddr_o(sys_waddr),
+    .sys_wdata_o(sys_wdata)
+    );
+`endif
+
 top vera(
     .clk25(clk25),
 
@@ -58,6 +82,12 @@ top vera(
     .spi_mosi(),
     .spi_miso(1'b0),
     .spi_ssel_n_sd(),
+
+`ifdef WITH_SPI_DEBUG
+    .debug_wr(sys_wr),
+    .debug_addr(sys_waddr[4:0]),
+    .debug_wdata(sys_wdata[7:0]),
+`endif
 
     .extbus_cs_n(1'b0),
     .extbus_rd_n(extbus_rd_n),
@@ -87,5 +117,6 @@ SB_IO #(
         .D_IN_1()
         );
 `endif
+
 
 endmodule

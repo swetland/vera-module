@@ -41,10 +41,10 @@ set_io extbus_rd_n 32
 set_io extbus_wr_n 31
 set_io extbus_irq_n 28
 
-#set_io spi_sck 15
-#set_io spi_mosi 14
-#set_io spi_miso 17
-#set_io spi_ssel_n_sd 16
+set_io spi_clk 15
+set_io spi_si 14
+set_io spi_so 17
+set_io spi_cs 16
 
 # RGB LED header
 set_io audio_lrck 39
