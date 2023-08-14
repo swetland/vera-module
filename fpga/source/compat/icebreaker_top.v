@@ -37,9 +37,9 @@ wire [3:0] vga_r;
 wire [3:0] vga_g;
 wire [3:0] vga_b;
 
-assign hdmi_red = vga_r[0] ^ vga_r[1] ^ vga_r[2] ^ vga_r[3];
-assign hdmi_grn = vga_g[0] ^ vga_g[1] ^ vga_g[2] ^ vga_g[3];
-assign hdmi_blu = vga_b[0] ^ vga_b[1] ^ vga_b[2] ^ vga_b[3];
+assign hdmi_red = vga_r[3];
+assign hdmi_grn = vga_g[3];
+assign hdmi_blu = vga_b[3];
 
 pll_12_25 pll(
     .clock_in(clk12),
