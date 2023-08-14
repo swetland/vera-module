@@ -1,0 +1,17 @@
+
+PROJECT_TYPE := nextpnr-ice40
+
+PROJECT_DEFINES := WITH_VGA_ACTIVE
+
+PROJECT_NEXTPNR_OPTS := --package sg48 --up5k
+PROJECT_YOSYS_OPTS := -abc9 -dsp
+
+PROJECT_TOP := icebreaker_top
+
+PROJECT_SRCS := \
+	project/vera-icebreaker.pcf \
+	source/compat/icebreaker_top.v \
+	source/compat/pll_12_25.v \
+	source/compat/spi_debug_ifc.v
+
+include project/vera-common.inc
