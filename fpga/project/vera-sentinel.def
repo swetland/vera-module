@@ -1,0 +1,15 @@
+
+PROJECT_TYPE := nextpnr-ice40
+
+PROJECT_DEFINES := WITH_EXTBUS_SYNC
+
+PROJECT_NEXTPNR_OPTS := --package sg48 --up5k
+PROJECT_YOSYS_OPTS := -abc9 -dsp
+
+PROJECT_TOP := sentinel_top
+
+PROJECT_SRCS := \
+	project/vera-sentinel.pcf \
+	source/compat/sentinel_top.v
+
+include project/vera-common.inc
