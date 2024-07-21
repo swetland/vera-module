@@ -1,7 +1,6 @@
+`define WITH_SENTINEL
 
 module sentinel_top(
-    input  wire       sysclk,
-
     // VGA interface
     output wire [3:0] vga_r,
     output wire [3:0] vga_g,
@@ -15,16 +14,17 @@ module sentinel_top(
     output wire       audio_data,
 
     // External bus interface
-    input  wire       extbus_clk,    /* Clock */
+    input  wire       extbus_sysclk,    /* Clock */
     input  wire       extbus_cs_n,   /* Chip Select */
-    input  wire       extbus_rw,     /* Read(H)/Write(L) Select */
+    input  wire       extbus_phi2,     /* PHI2 clock */
+    input  wire       extbus_rw,     /* Read/Write Strobe */
     input  wire [4:0] extbus_a,      /* Address */
     inout  wire [7:0] extbus_d,      /* Data (bi-directional) */
     output wire       extbus_irq_n   /* IRQ */
 );
 
 top vera(
-    .clk25(sysclk),
+    .clk25(extbus_sysclk),
 
     .vga_r(vga_r),
     .vga_g(vga_g),
@@ -42,11 +42,11 @@ top vera(
     .spi_ssel_n_sd(),
 
     .extbus_cs_n(extbus_cs_n),
-    .extbus_rd_n(~extbus_rw),
-    .extbus_wr_n(extbus_rw),
+	.extbus_phi2(extbus_phi2),
+    .extbus_rw(extbus_rw),
     .extbus_a(extbus_a),
     .extbus_d(extbus_d),
     .extbus_irq_n(extbus_irq_n)
-    );
+);
 
 endmodule

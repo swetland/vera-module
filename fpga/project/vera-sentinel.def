@@ -1,8 +1,6 @@
 
 PROJECT_TYPE := nextpnr-ice40
 
-PROJECT_DEFINES := WITH_EXTBUS_SYNC
-
 PROJECT_NEXTPNR_OPTS := --package sg48 --up5k
 PROJECT_YOSYS_OPTS := -abc9 -dsp
 
