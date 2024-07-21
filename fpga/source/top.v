@@ -39,8 +39,13 @@ module top(
 
     // External bus interface
     input  wire       extbus_cs_n,   /* Chip select */
+`ifdef WITH_SENTINEL
+    input  wire       extbus_phi2,   /* PHI2 clock */
+    input  wire       extbus_rw,   	 /* Read/Write strobe */
+`else
     input  wire       extbus_rd_n,   /* Read strobe */
     input  wire       extbus_wr_n,   /* Write strobe */
+`endif
     input  wire [4:0] extbus_a,      /* Address */
     inout  wire [7:0] extbus_d,      /* Data (bi-directional) */
     output wire       extbus_irq_n   /* IRQ */
@@ -215,8 +220,13 @@ module top(
         5'h1F: rddata = {spi_busy, 4'b0, spi_autotx_r, spi_slow_r, spi_select_r};
     endcase
 
+`ifdef WITH_SENTINEL
+    wire bus_read  = !extbus_cs_n && extbus_phi2 &&  extbus_rw;
+    wire bus_write = !extbus_cs_n && extbus_phi2 && !extbus_rw;
+`else
     wire bus_read  = !extbus_cs_n &&  extbus_wr_n && !extbus_rd_n;
     wire bus_write = !extbus_cs_n && !extbus_wr_n;
+`endif
     assign extbus_d = bus_read ? rddata : 8'bZ;
 
     wire [3:0] irq_enable = {irq_enable_audio_fifo_low_r, irq_enable_sprite_collision_r, irq_enable_line_r, irq_enable_vsync_r};
